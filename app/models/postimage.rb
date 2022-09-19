@@ -2,6 +2,11 @@ class Postimage < ApplicationRecord
 
   has_one_attached :image
   belong_to :user
+  has_many :post_comments, dependent: :destroy
+  has_many :favorites, dependent: :destroy
+
+  validates :shop_name, presence: :ture
+  validates :image, presence: :ture
 
    def get_image
     if image.attached?
@@ -17,5 +22,9 @@ class Postimage < ApplicationRecord
       image.attach(io: File.open(file_path), filename: 'default-image.jpg', content_type: 'image/jpeg')
     end
     image
+   end
+
+   def favorited_by?(user)
+    favorites.exists?(user_id: user.id)
    end
 end
